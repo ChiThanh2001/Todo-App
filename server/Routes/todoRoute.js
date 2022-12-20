@@ -1,5 +1,6 @@
 const express = require('express')
 const { option } = require('../db/connectDB')
+const statusCode = require('http-status-codes')
 const knex = require('knex')(option)
 
 const app = express()
@@ -13,7 +14,9 @@ router.get('/',async (req,res)=>{
 
 router.post('/addTodo',async (req,res)=>{
     const {nameTodo,detail} = req.body
-
+    if(!nameTodo){
+        return res.status(statusCode.BAD_REQUEST).json('Please provide a name for your todo')
+    }
     const addTodo = `INSERT INTO todoapp.todolist(NameTodo,Detail) VALUES("${nameTodo}","${detail}")`
     try {
         const response = await knex.raw(addTodo)
@@ -40,6 +43,9 @@ router.delete('/deleteTodo/:id',async (req,res)=>{
 router.patch('/updateTodo/:id',(req,res)=>{
     const {nameTodo , detail} = req.body
     const {id} = req.params
+    if(!nameTodo){
+        return res.status(statusCode.BAD_REQUEST).json('Please provide a name for your todo')
+    }
     const update = `UPDATE todoapp.todolist SET NameTodo="${nameTodo}",Detail="${detail}" WHERE Id=${id}`
     knex.raw(update)
     .then((result)=>{

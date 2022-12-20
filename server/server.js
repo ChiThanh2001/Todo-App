@@ -1,11 +1,13 @@
 const express = require('express')
 const {router} = require('./Routes/todoRoute')
 const {option} = require('./db/connectDB')
+const cors = require('cors')
 const app = express()
 app.use(express.json())
 
 const PORT = 5000
 
+app.use(cors())
 app.use('/',router)
 
 const start = async () => {
